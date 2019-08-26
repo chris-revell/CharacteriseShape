@@ -71,8 +71,6 @@ def findLongestRoute(filename):
                     pseudobranches.append((x,y))
 
     plt.imshow(bw+100*maxis,cmap="gray_r")
-    plt.show()
-    #%%
 
     maxLength = 0
     route = []
@@ -184,20 +182,16 @@ for i,pixel in enumerate(longestRoute[1:]):
     xs[i+1] = dist
     ys[i+1] = longestRouteWidths[i+1]
 
-#%%
 fig,ax = plt.subplots(2,2,figsize=(12,12))
 ax[0,0].imshow(originalimage,cmap="gray_r")
 ax[0,1].imshow((bw+100*maxis),cmap="gray_r")
 ax[1,0].imshow((bw+1000*pathImage),cmap="gray_r")
-
 ax[1,1].plot(xs,ys,label="Raw data")
-
 z = np.polyfit(xs,ys,3)
 z[-1] = 0
 zfun = np.poly1d(z)
 zs = zfun(xs)
 ax[1,1].plot(xs,zs,label="Cubic")
-
 z = np.polyfit(xs,ys,2)
 z[-1] = 0
 zfun = np.poly1d(z)
