@@ -5,10 +5,7 @@ from math import sqrt
 import cv2
 from skimage.util import invert
 from skimage.morphology import medial_axis
-#from scipy.optimize import curve_fit
 from astropy import modeling
-#from scipy import interpolate, integrate, optimize
-#import os
 
 # Function to import image and generate bw image
 def read_cell(file):
@@ -27,6 +24,15 @@ def med_axis(bw_image):
 
 # Create black and white image
 originalimage,bw = read_cell(argv[1])
+
+
+# Calculate cell area in terms of pixels
+area = 0
+for i in range(np.shape(bw)[0]):
+    for j in range(np.shape(bw)[1]):
+        if bw[i,j] == 255:
+            area = area+1
+
 # Create medial axis from imported image
 maxis = med_axis(bw)
 
@@ -178,12 +184,17 @@ for i,pixel in enumerate(longestRoute[1:]):
     ys[i+1] = longestRouteWidths[i+1]
 
 
+
+
 #%%
 
 # Adjust distances along axis such that widest point is at 0
 # Therefore fitted mean value is always around 0
 peakdist = xs[np.argmax(longestRouteWidths)]
 xs = xs - peakdist
+
+xs = xs/area
+ys = ys/area
 
 #Fit Gaussian to width data
 fitter = modeling.fitting.LevMarLSQFitter()
