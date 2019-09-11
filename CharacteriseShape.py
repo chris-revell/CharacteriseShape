@@ -9,11 +9,11 @@ from astropy import modeling
 
 # Function to import image and generate bw image
 def read_cell(file):
-    image = cv2.imread(argv[1])
+    image = cv2.imread(file)
     gray_image = invert(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
-    blur = cv2.GaussianBlur(gray_image, (15, 15), 0)
+    blur = cv2.GaussianBlur(gray_image, (5, 5), 0)
     ret3, bw_image = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    bw_image = 255-bw_image
+    #bw_image = 255-bw_image
     return image,bw_image
 
 # Function to generate medial axis
@@ -35,6 +35,10 @@ for i in range(np.shape(bw)[0]):
 
 # Create medial axis from imported image
 maxis = med_axis(bw)
+
+plt.imshow(bw+100*maxis,cmap="gray_r")
+plt.show()
+
 
 # Array to store the indices of neighbouring pixels within the medial axis for all pixels within the medial axis.
 neighbours = np.zeros((np.shape(maxis)[0],np.shape(maxis)[1],18),dtype='int')
@@ -193,8 +197,8 @@ for i,pixel in enumerate(longestRoute[1:]):
 peakdist = xs[np.argmax(longestRouteWidths)]
 xs = xs - peakdist
 
-xs = xs/area
-ys = ys/area
+xs = xs#q/area
+ys = ys#q/area
 
 #Fit Gaussian to width data
 fitter = modeling.fitting.LevMarLSQFitter()
@@ -206,7 +210,7 @@ fitted_model = fitter(model, xs, ys)
 fig,ax = plt.subplots(1,2,figsize=(12,6))
 ax[0].imshow((bw+1000*pathImage),cmap="gray_r")
 ax[1].plot(xs,ys,label="Raw data")
-ax[1].plot(xs,fitted_model(xs),label="Gaussian")
+ax[1].plot(xs,fitted_model(xs),label="Gaussian, ratio {:04.2f}".format(fitted_model.stddev.value/fitted_model.amplitude.value))
 ax[1].set_xlabel("Axis distance")
 ax[1].set_ylabel("Width")
 ax[1].legend(loc="best")
@@ -219,7 +223,9 @@ outfile = open(argv[1][:-4]+"Parameters.txt","w")
 outfile.write(str(fitted_model.amplitude.value)+"\n")
 outfile.write(str(fitted_model.mean.value)+"\n")
 outfile.write(str(fitted_model.stddev.value)+"\n")
+outfile.write(str(fitted_model.stddev.value/fitted_model.amplitude.value)+"\n")
 outfile.close()
 
 print(fitted_model)
+print("Ratio std/amp:", fitted_model.stddev.value/fitted_model.amplitude.value)
 #%%
