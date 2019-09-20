@@ -182,11 +182,14 @@ for i,pixel in enumerate(longestRoute[1:]):
 # Find the location of the widest point in the axis
 widestPixel = longestRoute[np.argmax(longestRouteWidths)]
 
-
 # Normalise cell area to 1
 area = np.trapz(ys,xs)
 xs = xs/sqrt(area)
 ys = ys/sqrt(area)
+
+# Find normalised max values
+widestValue = np.max(ys)
+pathLength = np.max(xs)
 
 # Fit Gaussian to normalised width data
 fitter = modeling.fitting.LevMarLSQFitter()
@@ -213,9 +216,11 @@ fig1.savefig(argv[1][:-4]+"GaussianFit.png",bbox_inches='tight',padding_inches=0
 # Save fit values to file
 outfile = open(argv[1][:-4]+"Parameters.txt","w")
 outfile.write("Amplitude = "+str(fitted_model.amplitude.value)+"\n")
-outfile.write("Mean ="+str(fitted_model.mean.value)+"\n")
-outfile.write("Standard deviation ="+str(fitted_model.stddev.value)+"\n")
-outfile.write("Ratio std/amp ="+str(fitted_model.stddev.value/fitted_model.amplitude.value)+"\n")
+outfile.write("Mean = "+str(fitted_model.mean.value)+"\n")
+outfile.write("Standard deviation = "+str(fitted_model.stddev.value)+"\n")
+outfile.write("Ratio std/amp = "+str(fitted_model.stddev.value/fitted_model.amplitude.value)+"\n")
+outfile.write("Normalised max width = "str(widestValue)+"\n")
+outfile.write("Normalised axis length = "str(pathLength)+"\n")
 outfile.close()
 
 # Find cell number
@@ -234,5 +239,5 @@ else:
 
 
 # Output details to stdout
-print(Nc, ", ", M ,",",fitted_model.mean.value,",",fitted_model.amplitude.value,",",fitted_model.stddev.value)
+print(Nc, ", ", M ,",",fitted_model.mean.value,",",fitted_model.amplitude.value,",",fitted_model.stddev.value,",",widestValue,",",pathLength)
 #%%
