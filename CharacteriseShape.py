@@ -11,9 +11,9 @@ from astropy import modeling
 def read_cell(file):
     image = cv2.imread(file)
     gray_image = invert(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
-    blur = cv2.GaussianBlur(gray_image, (5, 5), 0)
-    ret3, bw_image = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    #bw_image = 255-bw_image
+    #blur = cv2.GaussianBlur(gray_image, (5, 5), 0)
+    #ret3, bw_image = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    bw_image = gray_image
     return image,bw_image
 
 # Function to generate medial axis
@@ -29,8 +29,8 @@ originalimage,bw = read_cell(argv[1])
 maxis = med_axis(bw)
 
 # Visually inspect axis to avoid loops
-plt.imshow(bw+100*maxis,cmap="gray_r")
-plt.show()
+#plt.imshow(bw+100*maxis,cmap="gray_r")
+#plt.show()
 
 # Array to store the indices of all neighbouring pixels within the medial axis for each pixel within the medial axis.
 neighbours = np.zeros((np.shape(maxis)[0],np.shape(maxis)[1],18),dtype='int')
@@ -219,8 +219,8 @@ outfile.write("Amplitude = "+str(fitted_model.amplitude.value)+"\n")
 outfile.write("Mean = "+str(fitted_model.mean.value)+"\n")
 outfile.write("Standard deviation = "+str(fitted_model.stddev.value)+"\n")
 outfile.write("Ratio std/amp = "+str(fitted_model.stddev.value/fitted_model.amplitude.value)+"\n")
-outfile.write("Normalised max width = "str(widestValue)+"\n")
-outfile.write("Normalised axis length = "str(pathLength)+"\n")
+outfile.write("Normalised max width = "+str(widestValue)+"\n")
+outfile.write("Normalised axis length = "+str(pathLength)+"\n")
 outfile.close()
 
 # Find cell number
