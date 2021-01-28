@@ -198,12 +198,13 @@ fitted_model = fitter(model, xs, ys)
 
 # Plot results
 # Plot image of cell with axis and widest point.
-fig0,ax0 = plt.subplots(1,1,figsize=(6,6))
-ax0.imshow((bw+1000*pathImage),cmap="gray_r")
-ax0.scatter(widestPixel[1],widestPixel[0],color="red",s=2)
-ax0.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
-ax0.tick_params(axis='y', which='both', left=False, right=False, labelleft=False)
-fig0.savefig(argv[1][:-4]+"WithAxis.png",bbox_inches='tight',padding_inches=0,dpi=300)
+#fig0,ax0 = plt.subplots(1,1,figsize=(6,6))
+#ax0.imshow((bw+1000*pathImage),cmap="gray_r")
+plt.imsave(argv[1][:-4]+"WithAxis.png",(bw+1000*pathImage),cmap="gray_r")
+#ax0.scatter(widestPixel[1],widestPixel[0],color="red",s=2)
+#ax0.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
+#ax0.tick_params(axis='y', which='both', left=False, right=False, labelleft=False)
+#fig0.savefig(argv[1][:-4]+"WithAxis.png",bbox_inches='tight',padding_inches=0,dpi=300)
 # Plot width data with fitted Gaussian
 fig1,ax1 = plt.subplots(1,1,figsize=(6,6))
 ax1.plot(xs,ys,label="Raw data")
@@ -211,7 +212,7 @@ ax1.plot(xs,fitted_model(xs),label="Gaussian:\nA={:04.2f}\n$\sigma$={:04.2f}\n$\
 ax1.set_xlabel("Axis distance")
 ax1.set_ylabel("Width")
 ax1.legend(loc="best")
-fig1.savefig(argv[1][:-4]+"GaussianFit.png",bbox_inches='tight',padding_inches=0,dpi=300)
+fig1.savefig(argv[1][:-4]+"GaussianFit.png",bbox_inches='tight',dpi=300)
 
 # Save fit values to file
 outfile = open(argv[1][:-4]+"Parameters.txt","w")
@@ -227,7 +228,7 @@ outfile.close()
 parts = (argv[1]).split("_")
 for n,i in enumerate(parts):
     if "/Cell" in i:
-        Nc = parts[n+1]
+        Nc = parts[n][-1]
         break
     else:
         pass
