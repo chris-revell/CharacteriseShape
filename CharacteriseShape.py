@@ -196,15 +196,18 @@ fitter = modeling.fitting.LevMarLSQFitter()
 model = modeling.models.Gaussian1D()   # depending on the data you need to give some initial values
 fitted_model = fitter(model, xs, ys)
 
-# Plot results
-# Plot image of cell with axis and widest point.
-#fig0,ax0 = plt.subplots(1,1,figsize=(6,6))
-#ax0.imshow((bw+1000*pathImage),cmap="gray_r")
-plt.imsave(argv[1][:-4]+"WithAxis.png",(bw+1000*pathImage),cmap="gray_r")
-#ax0.scatter(widestPixel[1],widestPixel[0],color="red",s=2)
-#ax0.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
-#ax0.tick_params(axis='y', which='both', left=False, right=False, labelleft=False)
-#fig0.savefig(argv[1][:-4]+"WithAxis.png",bbox_inches='tight',padding_inches=0,dpi=300)
+
+# Save cell image with spline and widest point 
+img = (bw+1000*pathImage)
+h, w = np.shape(img)
+fig0 = plt.figure(figsize=(w/100.,h/100.), dpi=100)
+ax0 = fig0.add_axes([0,0,1,1])
+ax0.axis('off')
+ax0.imshow(img, zorder=0,  extent=[0,w,  h, 0], interpolation="nearest",cmap="gray_r")
+ax0.scatter(widestPixel[1],widestPixel[0],color="red",s=2)
+plt.savefig(argv[1][:-4]+"WithAxis.png", bbox_inches=0, dpi=100)
+
+
 # Plot width data with fitted Gaussian
 fig1,ax1 = plt.subplots(1,1,figsize=(6,6))
 ax1.plot(xs,ys,label="Raw data")
